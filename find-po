@@ -1,0 +1,39 @@
+/**
+ * @OnlyCurrentDoc
+ */
+
+
+/* this script currently will not work as a custom formula. Google no longer allows importing data from external sheets in formulas, only in scripts.
+in order to get the desired function, make a script that imports the data to a new sheet on the same spreadsheet on a time based trigger and use
+somthing like vlookup to match the data togehter*/
+
+
+function findPO(serial) {
+  
+  var cell = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet().getActiveCell(); // get active cell
+  
+  var Folder = DriveApp.getFoldersByName("Test PO's").next(); // retrieve the folder that holds desired spreadsheets
+  
+  var spreadsheets = Folder.getFilesByType("application/vnd.google-apps.spreadsheet"); // get all spreadsheets in that folder
+  
+  while(spreadsheets.hasNext()) {
+    
+    var sheet = spreadsheets.next();
+    
+    var spreadsheet = SpreadsheetApp.openById(sheet.getId());
+    
+    var sh = spreadsheet.getSheetByName('Data'); // select each sheet by name
+    
+    var last = sh.getLastRow(); // get last row of selected sheet
+    
+    var data = sh.getRange(3, 2, last, 4).getValues(); // set range from 3rd row and 2nd column to last row and 5th column
+    
+    /* search given range for a match to "serial" */
+    for(nn=0;nn<data.length;++nn){
+      if (data[nn][4]==serial){
+        
+        cell.setValue(data[nn][0]); // set active cell to 2nd column of selected range if match is found in previous formula
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+function onEdit() {
+  
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var hidden = ss.getSheetByName("Hidden");
+  var last = hidden.getRange("B2").getValue();
+  var sheetList = hidden.getRange(3, 1, last).getValues();
+  
+  for (i = 0; i < sheetList.length; i++) {
+    
+    var sheetName = ss.getSheetByName(sheetList[i]);
+    
+    if (sheetName != null) {
+      
+      var aCell = sheetName.getActiveCell();
+      var col = aCell.getColumn();
+      var adjacentCell1 = aCell.offset(0, -2);
+      var adjacentCell2 = aCell.offset(0, -1);
+      var vlookup = '=if(len(C:C),iferror(vlookup(C:C,MPL!A:G,7,false),"unknown"),)';
+      
+      if(col==3 && adjacentCell1.getValue()=="" && adjacentCell2.getValue()=="" && aCell.getValue()!="") {
+        
+        var newDate = Utilities.formatDate(new Date(), "GMT", "MM/dd/yyyy")
+        adjacentCell1.setValue(newDate);
+        adjacentCell2.setValue(vlookup);
+      }
+    }
+  }
+}

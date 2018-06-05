@@ -1,0 +1,203 @@
+var techs = ["Eli","Eric","Josh","Saif","Taylor"];
+var IOStechs = ["Emma","Jason","Jeff","Taschia"];
+var i = 0;
+
+
+
+
+
+function mergeSheets(){
+  // removeOldSheets(); // not run with mergeSheets by default
+  importSheetsTech();
+  importSheetsIOS();
+  removeOldDataTech();
+  removeOldDataIOS();
+  copyNewDataTech();
+  copyNewDataIOS();
+}
+
+
+
+
+
+
+function removeOldSheets() {
+  
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
+  var sheets = ss.getSheets();
+
+  for (i = 0; i < sheets.length; i++) {
+    switch(sheets[i].getSheetName()) {
+      case "Tech Sheet":
+      case "IOS Sheet":
+      case "PO and Serials":
+        break;
+      default:
+        ss.deleteSheet(sheets[i]);
+    }
+  }
+}
+
+
+
+
+
+
+function importSheetsTech() {
+  
+  var Folder = DriveApp.getFoldersByName("Monthly Processing Reports").next();
+  var allSpreadSheets = Folder.getFilesByType("application/vnd.google-apps.spreadsheet");
+  
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var main = ss.getSheetByName("Tech sheet");
+  
+  for (i = 0; i < techs.length; i++){
+    if (ss.getSheetByName(techs[i]) == null) {}
+    else {
+      var sheet = ss.getSheetByName(techs[i]);
+      sheet.getDataRange().clearContent();
+      sheet.getDataRange().clearFormat();
+    }
+  }
+  
+  while(allSpreadSheets.hasNext()) {
+    var spreadSheets = allSpreadSheets.next();
+    var spreadSheet = SpreadsheetApp.openById(spreadSheets.getId());
+    
+    for (i = 0; i < techs.length; i++){
+      
+      var sourceSheet = spreadSheet.getSheetByName(techs[i]); 
+      
+      if (ss.getSheetByName(techs[i]) == null) {
+        ss.insertSheet(techs[i]);
+        ss.getSheetByName(techs[i]).setTabColor("ff0000");
+        var targetSheet = ss.getSheetByName(techs[i]);}
+      else {
+        var targetSheet = ss.getSheetByName(techs[i]);}
+      
+      if (sourceSheet) {
+        var sourceLast = sourceSheet.getLastRow();
+        var sourceLength = sourceSheet.getRange(1, 1, sourceLast).getValues().filter(String).length;
+        var targetStart = targetSheet.getLastRow() + 1;
+        var targetRange = targetSheet.getRange(targetStart, 1, sourceLength, 15);
+        var data = sourceSheet.getRange(1, 1, sourceLength, 15).getValues();
+        targetRange.setValues(data);
+      }
+    }
+  }
+}
+
+function importSheetsIOS() {
+  
+  var Folder = DriveApp.getFoldersByName("Monthly Processing Reports").next();
+  var allSpreadSheets = Folder.getFilesByType("application/vnd.google-apps.spreadsheet");
+  
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var main = ss.getSheetByName("Tech sheet");
+  
+  for (i = 0; i < IOStechs.length; i++){
+    if (ss.getSheetByName(IOStechs[i]) == null) {}
+    else {
+      var sheet = ss.getSheetByName(IOStechs[i]);
+      sheet.getDataRange().clearContent();
+      sheet.getDataRange().clearFormat();
+    }
+  }
+  
+  while(allSpreadSheets.hasNext()) {
+    var spreadSheets = allSpreadSheets.next();
+    var spreadSheet = SpreadsheetApp.openById(spreadSheets.getId());
+    
+    for (i = 0; i < IOStechs.length; i++){
+      
+      var sourceSheet = spreadSheet.getSheetByName(IOStechs[i]); 
+      
+      if (ss.getSheetByName(IOStechs[i]) == null) {
+        ss.insertSheet(IOStechs[i]);
+        ss.getSheetByName(IOStechs[i]).setTabColor("0000ff");
+        var targetSheet = ss.getSheetByName(IOStechs[i]);}
+      else {
+        var targetSheet = ss.getSheetByName(IOStechs[i]);}
+      
+      if (sourceSheet) {
+        var sourceLast = sourceSheet.getLastRow();
+        var sourceLength = sourceSheet.getRange(1, 1, sourceLast).getValues().filter(String).length;
+        var targetStart = targetSheet.getLastRow() + 1;
+        var targetRange = targetSheet.getRange(targetStart, 1, sourceLength, 13);
+        var data = sourceSheet.getRange(1, 1, sourceLength, 13).getValues();
+        targetRange.setValues(data);
+      }
+    }
+  }
+}
+
+
+
+
+
+
+function removeOldDataTech() {
+  
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
+  var sheet = ss.getSheetByName("Tech Sheet");
+  
+  var last = sheet.getLastRow();
+  
+  sheet.getRange(4, 3, last, 15).clearContent();
+  sheet.getRange(4, 3, last, 15).clearFormat();
+}
+
+function removeOldDataIOS() {
+  
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  
+  var sheet = ss.getSheetByName("IOS Sheet");
+  
+  var last = sheet.getLastRow();
+  
+  sheet.getRange(4, 3, last, 13).clearContent();
+  sheet.getRange(4, 3, last, 13).clearFormat();
+}
+
+
+
+
+
+
+function copyNewDataTech() {
+  
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var mainSheet = ss.getSheetByName("Tech sheet");
+  
+  for (i = 0; i < techs.length; i++){
+    if (ss.getSheetByName(techs[i]) == null) {
+    }
+    else {
+      var mainLast = mainSheet.getLastRow();
+      var mainRange = mainSheet.getRange((mainLast + 1), 3);
+      var sheet = ss.getSheetByName(techs[i]);
+      var sheetLast = sheet.getLastRow();
+      sheet.getRange(1, 1, sheetLast, 15).copyTo(mainRange);
+    }
+  }
+}
+
+function copyNewDataIOS() {
+  
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var mainSheet = ss.getSheetByName("IOS sheet");
+  
+  for (i = 0; i < IOStechs.length; i++){
+    if (ss.getSheetByName(IOStechs[i]) == null) {
+    }
+    else {
+      var mainLast = mainSheet.getLastRow();
+      var mainRange = mainSheet.getRange((mainLast + 1), 3);
+      var sheet = ss.getSheetByName(IOStechs[i]);
+      var sheetLast = sheet.getLastRow();
+      sheet.getRange(1, 1, sheetLast, 13).copyTo(mainRange);
+    }
+  }
+}

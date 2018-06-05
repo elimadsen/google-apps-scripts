@@ -1,0 +1,132 @@
+function setToday() {
+
+  /* gets active Spreadsheet and active Sheet */
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+  /* gets today's date */
+  var today = Utilities.formatDate(new Date(), "GMT", "MM/dd/yyyy");
+  
+  /* selects start date cell */
+  var startDateCell = ss.setActiveSelection("C1");
+  
+  /* selects end date cell */
+  var endDateCell = ss.setActiveSelection("C2");
+  
+  /* sets variable start date cell to today */
+  startDateCell.setValue(today);
+  
+  /* sets variable end date cell to today */
+  endDateCell.setValue(today);
+}
+
+function setThisWeek() {
+  
+  /* gets active Spreadsheet and active Sheet */
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+  /* selects start date cell */
+  var startDateCell = ss.setActiveSelection("C1");
+  
+  /* selects end date cell */
+  var endDateCell = ss.setActiveSelection("C2");
+  
+  /* Miliseconds in a day */
+  var milDay = 1000 * 60 * 60 * 24;
+  
+  /* get current week number */
+  var weekNumber = new Date().getDay() -1;
+  
+  /* get beginning of week */
+  var startDate = new Date(new Date().getTime() - weekNumber * milDay);
+  
+  /* get end of week */
+  var endDate = new Date(startDate.getTime() + 4 * milDay);
+  
+  /* sets variable start date cell to beginning of week */
+  startDateCell.setValue(startDate);
+  
+  /* sets variable end date cell to end of week */
+  endDateCell.setValue(endDate);
+}
+
+function setThisMonth() {
+
+  /* gets active Spreadsheet and active Sheet */
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+  /* gets today's date */
+  var today = Utilities.formatDate(new Date(), "GMT", "MM/dd/yyyy");
+  
+  /* selects start date cell */
+  var startDateCell = ss.setActiveSelection("C1");
+  
+  /* selects end date cell */
+  var endDateCell = ss.setActiveSelection("C2");
+  
+  /* Miliseconds in a day */
+  var milDay = 1000 * 60 * 60 * 24;
+  
+  /* get current month number */
+  var currentMonth = new Date().getMonth();
+  
+  /* get current year */
+  var currentYear = new Date().getYear();
+  
+  /* get beginning of current month */
+  var startDate = new Date(currentYear,currentMonth,1,12);
+  
+  /* if month is december, sets month to january and adds one year. else adds one to month */
+  if(currentMonth=="11"){
+    var monthNumber = 0;
+    var yearNumber = currentYear + 1;
+  }
+    else{
+      var monthNumber = currentMonth + 1;
+      var yearNumber = currentYear;
+    }
+  
+  /* get beginning of next month */
+  var beginNextMonth = new Date(yearNumber,monthNumber,1,12);
+  
+  /* get end of current month */
+  var endDate = new Date(beginNextMonth - milDay);
+  
+  /* sets variable start date cell to beginning of month */
+  startDateCell.setValue(startDate);
+  
+  /* sets variable end date cell to end of month */
+  endDateCell.setValue(endDate);
+}
+
+function setCustom() {
+  
+  /* gets active Spreadsheet and active Sheet */
+  var ss = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  
+  /* selects start date cell */
+  var startDateCell = ss.setActiveSelection("C1");
+  
+  /* selects end date cell */
+  var endDateCell = ss.setActiveSelection("C2");
+  
+  /* gets ui from current spreadsheet */
+  var ui = SpreadsheetApp.getUi();
+  
+  /* prompts user for "Start Date" */
+  var startPrompt = ui.prompt('Start Date');
+  
+  /* prompts user for "End Date" */
+  var endPrompt = ui.prompt('End Date');
+  
+  /* get response text from startPrompt */
+  var startResponse = startPrompt.getResponseText();
+  
+  /* get response text from endPrompt */
+  var endResponse = endPrompt.getResponseText();
+  
+  /* sets variable start date cell to "startResponse" */
+  startDateCell.setValue(startResponse);
+  
+  /* sets variable start date cell to "endResponse" */
+  endDateCell.setValue(endResponse);
+}
